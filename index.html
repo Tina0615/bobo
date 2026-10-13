@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#102431" />
+    <title>Bobo 英文探險隊</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.90.0/phaser.min.js" defer></script>
+    <script src="./game.js" defer></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="Bobo 英文探險隊首頁">
+          <span class="brand-mark" aria-hidden="true">🐧</span>
+          <span class="brand-copy">
+            <span class="brand-name">BOBO <span>WORD QUEST</span></span>
+            <span class="brand-subtitle">小藍企鵝的英文探險</span>
+          </span>
+        </a>
+        <div class="topbar-actions">
+          <div class="score-chip" aria-live="polite">
+            <span class="score-icon" aria-hidden="true">✦</span>
+            <span><small>目前分數</small><strong id="scoreValue">0</strong></span>
+          </div>
+          <button id="restartButton" class="restart-button" type="button" title="重新開始遊戲">
+            <span aria-hidden="true">↻</span><span>重新開始</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="welcome-row" id="top">
+        <div>
+          <p class="eyebrow"><span class="live-dot"></span> READY, EXPLORER?</p>
+          <h1>跟著 Bobo 一起<span>闖關學英文</span></h1>
+          <p class="welcome-copy">移動小藍企鵝，找到句子裡的正確答案！答對 <b>+10</b>，答錯 <b class="minus">−5</b>。</p>
+        </div>
+        <div class="journey-counter">
+          <span class="counter-label">探險進度</span>
+          <strong><span id="correctCount">0</span><i> / 25</i></strong>
+          <div class="counter-track"><span id="totalProgress"></span></div>
+        </div>
+      </section>
+
+      <div class="game-layout">
+        <section class="play-column" aria-label="遊戲區">
+          <div class="question-card">
+            <div class="question-meta">
+              <span class="level-pill"><span class="level-dot"></span><span id="levelLabel">第 1 關</span></span>
+              <span class="question-count" id="questionCount">第 1 題 / 5</span>
+            </div>
+            <h2 id="questionText">Choose the opposite of “happy”.</h2>
+            <p id="questionHint">找出「happy」的相反詞，帶 Bobo 去碰一碰答案卡！</p>
+          </div>
+
+          <div class="arena-frame">
+            <div id="gameHost" class="game-host" aria-label="Bobo 英文闖關遊戲畫面"></div>
+            <div class="arena-hud">
+              <span class="arena-tag"><span class="map-pin" aria-hidden="true">⌖</span><span id="areaName">單字營地</span></span>
+              <span class="arena-tip"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> 或方向鍵移動</span>
+            </div>
+            <div id="startOverlay" class="game-overlay">
+              <div class="overlay-card">
+                <div class="bobo-badge" aria-hidden="true">🐧</div>
+                <p class="eyebrow">BOBO IS READY</p>
+                <h2>準備好出發了嗎？</h2>
+                <p>用方向鍵或 WASD 移動小藍企鵝 Bobo，蒐集題目的正確答案。</p>
+                <button id="startButton" class="primary-button" type="button">開始探險 <span aria-hidden="true">→</span></button>
+              </div>
+            </div>
+            <div id="finishOverlay" class="game-overlay finish-overlay" hidden>
+              <div class="overlay-card">
+                <div class="bobo-badge" aria-hidden="true">🏆</div>
+                <p class="eyebrow">QUEST COMPLETE</p>
+                <h2>Bobo 完成探險！</h2>
+                <p>五關全數通過，這趟旅程拿下 <b id="finalScore">0</b> 分！</p>
+                <button id="playAgainButton" class="primary-button" type="button">再玩一次 <span aria-hidden="true">↻</span></button>
+              </div>
+            </div>
+            <div id="toast" class="toast" role="status" aria-live="polite"></div>
+          </div>
+
+          <div class="mobile-controls" aria-label="觸控移動按鈕">
+            <span class="mobile-controls-label">移動 Bobo</span>
+            <div class="dpad">
+              <button class="dpad-button up" data-dir="up" type="button" aria-label="向上">▲</button>
+              <button class="dpad-button left" data-dir="left" type="button" aria-label="向左">◀</button>
+              <button class="dpad-button down" data-dir="down" type="button" aria-label="向下">▼</button>
+              <button class="dpad-button right" data-dir="right" type="button" aria-label="向右">▶</button>
+            </div>
+          </div>
+        </section>
+
+        <aside class="side-column">
+          <section class="side-card stage-card">
+            <div class="side-heading">
+              <div><p class="eyebrow">YOUR JOURNEY</p><h2>探險地圖</h2></div>
+              <span class="map-icon" aria-hidden="true">✧</span>
+            </div>
+            <ol id="stageList" class="stage-list" aria-label="五個關卡"></ol>
+          </section>
+
+          <section class="side-card mission-card">
+            <div class="mission-heading"><span class="mission-icon" aria-hidden="true">✦</span><h2>探險任務</h2></div>
+            <p>每題把 Bobo 帶到正確的英文答案卡，就能前往下一題。</p>
+            <div class="score-rules">
+              <div><span class="rule-symbol plus-symbol">+</span><span>答對答案</span><b>+10</b></div>
+              <div><span class="rule-symbol minus-symbol">−</span><span>碰到錯誤答案</span><b>−5</b></div>
+            </div>
+          </section>
+
+          <section class="side-card bobo-card">
+            <div class="bobo-card-art" aria-hidden="true"><span>🐧</span><i>✦</i></div>
+            <div><span class="bobo-caption">你的探險夥伴</span><h2>小藍企鵝 Bobo</h2><p>「Let’s find the right answer!」</p></div>
+          </section>
+        </aside>
+      </div>
+      <footer class="page-footer"><span>BOBO WORD QUEST</span><span>Learn a little. Explore a lot. <b>✦</b></span></footer>
+    </main>
+    <div id="loadError" class="load-error" hidden>遊戲引擎載入失敗，請確認網路連線後重新整理頁面。</div>
+  </body>
+</html>
