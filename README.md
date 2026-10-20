@@ -6,6 +6,10 @@
 
 用瀏覽器開啟 `index.html` 即可遊玩。Phaser 3.90.0 與字型從 CDN 載入，因此首次開啟時需要網路連線。
 
+## 遊戲式學習展示
+
+開啟 `learning.html` 可瀏覽十種遊戲機制範例。第 8 個位置介系詞遊戲由 `prepositions-game.html` 提供，支援滑鼠拖曳、觸控與鍵盤操作；其他 Phaser Labs 範例需要網路連線。
+
 ## 操作方式
 
 - 電腦：方向鍵或 WASD 移動 Bobo。

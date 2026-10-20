@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f2e9">
+  <title>把學習變成遊戲｜遊戲式學習與 Phaser 機制</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    html { overflow-y: scroll }
+    body { padding-left: 16px }
+    body { background: #f5f2e9 }
+    body { color: #172b2a }
+    body { font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif }
+    .navbar { background: #f5f2e9 }
+    .navbar { border-bottom: 1px solid #d9ded5 }
+    .brand { color: #12695c }
+    .brand { font-weight: 800 }
+    .navlink { color: #34534d }
+    .hero { background: #102c2b }
+    .hero { color: #f9f6ec }
+    .hero { border-radius: 28px }
+    .hero { overflow: hidden }
+    .hero { position: relative }
+    .hero { padding: 5rem 0 }
+    .eyebrow { color: #a5d9b8 }
+    .eyebrow { letter-spacing: .14em }
+    .eyebrow { font-size: .78rem }
+    .hero h1 { font-size: clamp(2.8rem, 7vw, 5.8rem) }
+    .hero h1 { font-weight: 850 }
+    .hero h1 { letter-spacing: -.045em }
+    .hero p { color: #d2e1d7 }
+    .hero p { max-width: 38rem }
+    .heroart { border: 1px solid #43615a }
+    .heroart { border-radius: 24px }
+    .heroart { background: #193b37 }
+    .heroart { padding: 1.4rem }
+    .board { display: grid }
+    .board { grid-template-columns: repeat(4, 1fr) }
+    .board { gap: .7rem }
+    .tile { aspect-ratio: 1 }
+    .tile { align-items: center }
+    .tile { display: flex }
+    .tile { justify-content: center }
+    .tile { border-radius: 14px }
+    .tile { background: #e3b35c }
+    .tile { color: #17312e }
+    .tile { font-size: 1.5rem }
+    .tile:nth-child(2) { background: #a5d9b8 }
+    .tile:nth-child(3) { background: #f1e6c9 }
+    .tile:nth-child(4) { background: #db7764 }
+    .tile:nth-child(5) { background: #f1e6c9 }
+    .tile:nth-child(6) { background: #db7764 }
+    .tile:nth-child(7) { background: #a5d9b8 }
+    .tile:nth-child(8) { background: #e3b35c }
+    .caption { color: #a5d9b8 }
+    .caption { font-size: .82rem }
+    .sectiontag { color: #167265 }
+    .sectiontag { font-size: .78rem }
+    .sectiontag { font-weight: 800 }
+    .sectiontag { letter-spacing: .14em }
+    .intro { padding: 5rem 0 3rem }
+    .intro h2 { max-width: 48rem }
+    .intro h2 { font-size: clamp(2rem, 4vw, 3.4rem) }
+    .intro h2 { font-weight: 800 }
+    .leadcopy { color: #4d625b }
+    .leadcopy { max-width: 46rem }
+    .loop { background: #e8eee4 }
+    .loop { border-radius: 24px }
+    .loop { padding: 2rem }
+    .step { background: #fffdf7 }
+    .step { border-radius: 18px }
+    .step { height: 100% }
+    .step { padding: 1.3rem }
+    .stepnum { color: #167265 }
+    .stepnum { font-size: .8rem }
+    .stepnum { font-weight: 800 }
+    .catalog { padding: 5rem 0 }
+    .cataloghead { margin-bottom: 2rem }
+    .cataloghead h2 { font-size: clamp(2rem, 4vw, 3.4rem) }
+    .cataloghead h2 { font-weight: 800 }
+    .gamecard { background: #fffdf7 }
+    .gamecard { border: 1px solid #dce2d8 }
+    .gamecard { border-radius: 22px }
+    .gamecard { height: 100% }
+    .gamecard { overflow: hidden }
+    .gamebody { padding: 1.4rem }
+    .number { color: #167265 }
+    .number { font-size: .8rem }
+    .number { font-weight: 800 }
+    .gamebody h3 { font-size: 1.35rem }
+    .gamebody h3 { font-weight: 800 }
+    .gamebody p { color: #52665f }
+    .usecase { color: #167265 }
+    .usecase { font-size: .9rem }
+    .usecase { font-weight: 700 }
+    .gameframe { background: #102c2b }
+    .gameframe { border: 0 }
+    .gameframe { display: block }
+    .gameframe { height: 600px }
+    .positiongame { height: 390px }
+    .gameframe { width: 100% }
+    .gameactions { display: flex }
+    .gameactions { justify-content: flex-end }
+    .gameactions { padding: .8rem 1.4rem 0 }
+    .gameactions .btn { background: #167265 }
+    .gameactions .btn { border-color: #167265 }
+    .tip { color: #6a7770 }
+    .tip { font-size: .82rem }
+    .closing { background: #dceae0 }
+    .closing { border-radius: 26px }
+    .closing { padding: 3rem }
+    .closing h2 { font-weight: 800 }
+    .footer { color: #64736c }
+    .footer { font-size: .85rem }
+    @media (max-width: 767px) {
+      .hero { padding: 3.5rem 0 }
+      .intro { padding: 3.5rem 0 2rem }
+      .catalog { padding: 3.5rem 0 }
+      .gameframe { height: 480px }
+      .positiongame { height: 320px }
+      .closing { padding: 2rem }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-md">
+    <div class="container py-3">
+      <a class="navbar-brand brand" href="#top">遊戲學習研究室</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu" aria-label="開啟導覽">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navmenu">
+        <div class="navbar-nav ms-auto">
+          <a class="nav-link navlink" href="#about">認識遊戲式學習</a>
+          <a class="nav-link navlink" href="#mechanics">探索十種機制</a>
+          <a class="nav-link navlink" href="#choose">設計起點</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main id="top" class="container">
+    <section class="hero">
+      <div class="container py-4">
+        <div class="row align-items-center g-5">
+          <div class="col-lg-7">
+            <div class="eyebrow text-uppercase mb-3">Learn by playing</div>
+            <h1 class="mb-4">把學習<br>變成一場遊戲</h1>
+            <p class="fs-5 mb-4">好的遊戲式學習，讓知識成為玩家做決定時真正用得上的工具。從一個清楚的學習目標開始，再挑選能讓思考看得見的遊戲機制。</p>
+            <a class="btn btn-light rounded-pill px-4 py-3" href="#mechanics">看看十種玩法</a>
+          </div>
+          <div class="col-lg-5">
+            <div class="heroart">
+              <div class="board">
+                <div class="tile">✦</div><div class="tile">?</div><div class="tile">◉</div><div class="tile">↗</div>
+                <div class="tile">◎</div><div class="tile">✦</div><div class="tile">↗</div><div class="tile">?</div>
+              </div>
+              <div class="caption mt-3">探索　思考　嘗試　再前進</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="intro">
+      <div class="sectiontag text-uppercase mb-3">01　概念</div>
+      <h2 class="mb-4">什麼是遊戲式學習</h2>
+      <p class="leadcopy fs-5">遊戲式學習是把明確的學習目標放進遊戲情境。玩家透過規則、選擇、回饋與挑戰練習知識或技能，並從結果中修正策略。遊戲帶來參與感，學習目標則決定每次遊玩要練習什麼。</p>
+      <div class="loop mt-5">
+        <div class="row g-3">
+          <div class="col-md-3"><div class="step"><div class="stepnum">第一步</div><h3 class="h5 mt-2">設定目標</h3><p class="mb-0">先說清楚玩家要理解或練會什麼。</p></div></div>
+          <div class="col-md-3"><div class="step"><div class="stepnum">第二步</div><h3 class="h5 mt-2">做出選擇</h3><p class="mb-0">讓玩家運用知識採取行動。</p></div></div>
+          <div class="col-md-3"><div class="step"><div class="stepnum">第三步</div><h3 class="h5 mt-2">收到回饋</h3><p class="mb-0">用清楚的結果呈現想法是否有效。</p></div></div>
+          <div class="col-md-3"><div class="step"><div class="stepnum">第四步</div><h3 class="h5 mt-2">再次嘗試</h3><p class="mb-0">根據經驗調整策略並累積熟練度。</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mechanics" class="catalog">
+      <div class="cataloghead">
+        <div class="sectiontag text-uppercase mb-3">02　遊戲機制</div>
+        <h2>十種機制，十種練習方式</h2>
+        <p class="leadcopy">每個範例都直接顯示可遊玩的區域，按全螢幕即可專心體驗遊戲機制。</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-lg-6"><article class="gamecard"><iframe id="sample01" class="gameframe" allowfullscreen loading="lazy" scrolling="no" title="避障與收集遊戲範例" src="https://labs.phaser.io/phaser4-view.html?src=src%2Fgames%2Favoid%20the%20germs%2Fmain.js&module=true#phaser-example"></iframe><div class="gameactions"><button class="btn btn-success rounded-pill px-3" type="button" onclick="goFullscreen('sample01')">全螢幕遊玩</button></div><div class="gamebody"><div class="number">機制 01</div><h3>避障與收集</h3><p>在移動中分辨危險和有用資源，練習注意力分配與即時判斷。</p><div class="usecase">適合練習　安全辨識與資源分類</div><div class="tip mt-2">Phaser 範例　Avoid the Germs</div></div></article></div>
+        <div class="col-lg-6"><article class="gamecard"><iframe id="sample02" class="gameframe" allowfullscreen loading="lazy" scrolling="no" title="點擊射擊遊戲範例" src="https://labs.phaser.io/phaser4-view.html?src=src%2Fgames%2Fbank%20panic%2Fmain.js&module=true#phaser-example"></iframe><div class="gameactions"><button class="btn btn-success rounded-pill px-3" type="button" onclick="goFullscreen('sample02')">全螢幕遊玩</button></div><div class="gamebody"><div class="number">機制 02</div><h3>快速辨識與點擊</h3><p>辨認目標並在短時間做出反應，讓辨識速度和判斷準確度都能練習。</p><div class="usecase">適合練習　符號辨認與快速分類</div><div class="tip mt-2">Phaser 範例　Bank Panic</div></div></article></div>
+        <div class="col-lg-6"><article class="gamecard"><iframe id="sample03" class="gameframe" allowfullscreen loading="lazy" scrolling="no" title="彈球與磚塊遊戲範例" src="https://labs.phaser.io/phaser4-view.html?src=src%2Fgames%2Fbreakout%2Fbreakout.js#phaser-example"></iframe><div class="gameactions"><button class="btn btn-success rounded-pill px-3" type="button" onclick="goFullscreen('sample03')">全螢幕遊玩</button></div><div class="gamebody"><div class="number">機制 03</div><h3>反彈與軌跡預測</h3><p>根據球的速度和碰撞方向調整位置，從連續回饋推估下一步。</p><div class="usecase">適合練習　角度、速度與因果推理</div><div class="tip mt-2">Phaser 範例　Breakout</div></div></article></div>
+        <div class="col-lg-6"><article class="gamecard"><iframe id="sample04" class="gameframe" allowfullscreen loading="lazy" scrolling="no" title="記憶配對遊戲範例" src="https://labs.phaser.io/phaser4-view.html?src=src%2Fgames%2Fcard%20memory%2Fmain.js&module=true#phaser-example"></iframe><div class="gameactions"><button class="btn btn-success rounded-pill px-3" type="button" onclick="goFullscreen('sample04')">全螢幕遊玩</button></div><div class="gamebody"><div class="number">機制 04</div><h3>翻牌配對與記憶</h3><p>記下卡片位置並比對概念，讓回想與知識連結成為解題方法。</p><div class="usecase">適合練習　詞彙、公式與圖像配對</div><div class="tip mt-2">Phaser 範例　Card Memory</div></div></article></div>
+        <div class="col-lg-6"><article class="gamecard"><iframe id="sample05" class="gameframe" allowfullscreen loading="lazy" scrolling="no" title="限時點擊遊戲範例" src="https://labs.phaser.io/phaser4-view.html?src=src%2Fgames%2Fcoin%20clicker%2Fmain.js&module=true#phaser-example"></iframe><div class="gameactions"><button class="btn btn-success rounded-pill px-3" type="button" onclick="goFullscreen('sample05')">全螢幕遊玩</button></div><div class="gamebody"><div class="number">機制 05</div><h3>限時挑戰與分數</h3><p>在有限時間中完成任務，讓熟練度、策略選擇和進步幅度清楚呈現。</p><div class="usecase">適合練習　心算、字詞熟練與短時回顧</div><div class="tip mt-2">Phaser 範例　Coin Clicker</div></div></article></div>
+        <div class="col-lg-6"><article class="gamecard"><iframe id="sample06" class="gameframe" allowfullscreen loading="lazy" scrolling="no" title="踩地雷邏輯遊戲範例" src="https://labs.phaser.io/phaser4-view.html?src=src%2Fgames%2Fminesweeper%2Fminesweeper.js#phaser-example"></iframe><div class="gameactions"><button class="btn btn-success rounded-pill px-3" type="button" onclick="goFullscreen('sample06')">全螢幕遊玩</button></div><div class="gamebody"><div class="number">機制 06</div><h3>線索推理與風險選擇</h3><p>從周圍數字推理隱藏狀態，評估風險後決定要探索還是標記。</p><div class="usecase">適合練習　邏輯推理與證據判讀</div><div class="tip mt-2">Phaser 範例　Minesweeper</div></div></article></div>
+        <div class="col-lg-6"><article class="gamecard"><iframe id="sample07" class="gameframe" allowfullscreen loading="lazy" scrolling="no" title="填色區域解謎範例" src="https://labs.phaser.io/phaser4-view.html?src=src%2Fgames%2Fflood%20fill%2Fflood-fill.js#phaser-example"></iframe><div class="gameactions"><button class="btn btn-success rounded-pill px-3" type="button" onclick="goFullscreen('sample07')">全螢幕遊玩</button></div><div class="gamebody"><div class="number">機制 07</div><h3>有限步數與規劃</h3><p>在步數限制內擴大同色區域，思考每個選擇如何改變整體局面。</p><div class="usecase">適合練習　策略規劃與資源管理</div><div class="tip mt-2">Phaser 範例　Flood Fill</div></div></article></div>
+        <div class="col-lg-6"><article class="gamecard"><iframe id="sample08" class="gameframe positiongame" allowfullscreen loading="lazy" scrolling="no" title="位置介系詞拖曳遊戲範例" src="prepositions-game.html"></iframe><div class="gameactions"><button class="btn btn-success rounded-pill px-3" type="button" onclick="goFullscreen('sample08')">全螢幕遊玩</button></div><div class="gamebody"><div class="number">機制 08</div><h3>拖曳定位與位置介系詞</h3><p>依照英文句子移動人物，練習 in front of、on、under、next to、behind 與 between。</p><div class="usecase">適合練習　空間概念與步驟排序</div><div class="tip mt-2">原創互動遊戲　支援滑鼠、觸控與鍵盤</div></div></article></div>
+        <div class="col-lg-6"><article class="gamecard"><iframe id="sample09" class="gameframe" allowfullscreen loading="lazy" scrolling="no" title="分道防守遊戲範例" src="https://labs.phaser.io/phaser4-view.html?src=src%2Fgames%2Fsnowmen%20attack%2Fmain.js&module=true#phaser-example"></iframe><div class="gameactions"><button class="btn btn-success rounded-pill px-3" type="button" onclick="goFullscreen('sample09')">全螢幕遊玩</button></div><div class="gamebody"><div class="number">機制 09</div><h3>分道防守與目標切換</h3><p>觀察不同路線上的威脅並切換目標，練習排序、優先處理和反應。</p><div class="usecase">適合練習　多目標判斷與優先排序</div><div class="tip mt-2">Phaser 範例　Snowmen Attack</div></div></article></div>
+        <div class="col-lg-6"><article class="gamecard"><iframe id="sample10" class="gameframe" allowfullscreen loading="lazy" scrolling="no" title="堆疊方塊遊戲範例" src="https://labs.phaser.io/phaser4-view.html?src=src%2Fgames%2Fstacker%2Fstacker.js#phaser-example"></iframe><div class="gameactions"><button class="btn btn-success rounded-pill px-3" type="button" onclick="goFullscreen('sample10')">全螢幕遊玩</button></div><div class="gamebody"><div class="number">機制 10</div><h3>時機判斷與精準操作</h3><p>掌握物件移動節奏，在適當時機放下方塊，從結果修正下一次操作。</p><div class="usecase">適合練習　節奏感、估算與精細控制</div><div class="tip mt-2">Phaser 範例　Stacker</div></div></article></div>
+      </div>
+    </section>
+
+    <section id="choose" class="closing mb-5">
+      <div class="sectiontag text-uppercase mb-3">03　設計起點</div>
+      <h2 class="mb-3">先選學習目標，再選遊戲機制</h2>
+      <p class="leadcopy mb-0">要練習記憶，可以從配對開始。要練習推理，可以設計可讀取的線索。要練習策略，加入有限步數或資源。機制的作用，是讓玩家反覆使用目標能力並看見行動結果。</p>
+    </section>
+    <footer class="footer text-center py-4">互動範例由 Phaser Labs 提供　頁面使用 Bootstrap CDN</footer>
+  </main>
+  <script>function goFullscreen(id) { document.getElementById(id).requestFullscreen() }</script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
